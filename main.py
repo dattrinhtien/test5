@@ -37,7 +37,7 @@ def index():
 
         data[user][selected_date] = form_data
         save_data(data)
-        return redirect(f"/?user={user}&date={selected_date}")
+        return redirect(f"/?user={user}")
 
     selected_data = data.get(user, {}).get(selected_date, {}) if user else {}
     user_data = data.get(user, {}) if user else {}
