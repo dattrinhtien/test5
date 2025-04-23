@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Theo dõi nhiệm vụ</title>
+    <title>Theo dõi tu luyện</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -13,69 +13,56 @@
         .card {
             margin-bottom: 20px;
         }
-        .form-check-label {
-            font-size: 1rem;
-        }
-        button.btn {
-            font-size: 1.1rem;
-            padding: 12px 30px;
-        }
     </style>
 </head>
 <body>
 <div class="container py-4">
-    <h2 class="text-center mb-4">📅 Theo dõi nhiệm vụ hằng ngày</h2>
+    <h2 class="text-center mb-4">📅 Theo dõi nhiệm vụ tu luyện</h2>
 
-   <form method="POST" id="form1">
-    <div class="mb-3">
-        <label class="form-label">Tên của bạn:</label>
-        <input type="text" name="user" class="form-control" required value="{{ user or '' }}">
-    </div>
+    <form method="POST" id="form1">
+        <div class="mb-3">
+            <label class="form-label">Tên của bạn:</label>
+            <input type="text" name="user" class="form-control" required value="{{ user or '' }}">
+        </div>
 
-    <div class="mb-3">
-        <label class="form-label">Chọn ngày:</label>
-        <input type="date" name="date" class="form-control" required value="{{ date }}">
-    </div>
-
-    <!-- phần checkbox nhiệm vụ vẫn giữ nguyên -->
-
+        <div class="mb-3">
+            <label class="form-label">Chọn ngày:</label>
+            <input type="date" name="date" class="form-control" required value="{{ date }}">
+        </div>
 
         <div class="row gy-3">
-            <!-- Luyện công -->
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">🧘‍♂️ Luyện công</h5>
                         {% for i in range(1, 6) %}
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="bai{{i}}" {% if data.get("bai" ~ i) %}checked{% endif %}>
-                                <label class="form-check-label">Bài {{i}}</label>
-                            </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="bai{{i}}" {% if data.get("bai" ~ i) %}checked{% endif %}>
+                            <label class="form-check-label">Bài {{i}}</label>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
-            <!-- Phát chính niệm -->
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">✨ Phát chính niệm</h5>
                         {% for time in ["sang", "trua", "chieu", "toi"] %}
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="pcn_{{time}}" {% if data.get("pcn_" ~ time) %}checked{% endif %}>
-                                <label class="form-check-label">{{ time.title() }}</label>
-                            </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="pcn_{{time}}" {% if data.get("pcn_" ~ time) %}checked{% endif %}>
+                            <label class="form-check-label">{{ time.title() }}</label>
+                        </div>
                         {% endfor %}
                     </div>
                 </div>
             </div>
 
-            <!-- Khác -->
-            <div class="col-12 col-md-6 col-lg-4">
+            <div class="col-md-4">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">📘 Mục khác</h5>
+                        <h5 class="card-title">📘 Khác</h5>
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" name="hocCPL" {% if data.get("hocCPL") %}checked{% endif %}>
                             <label class="form-check-label">Học Chuyển Pháp Luân</label>
@@ -94,20 +81,18 @@
         </div>
 
         <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success">💾 Lưu</button>
+            <button type="submit" class="btn btn-success px-4 py-2">💾 Lưu</button>
         </div>
     </form>
 
-    <!-- Biểu đồ -->
-    <h4 class="text-center mt-5">📊 Biểu đồ theo dõi nhiệm vụ (dạng cột)</h4>
+    <h4 class="text-center mt-5">📊 Biểu đồ nhiệm vụ (chỉ của bạn)</h4>
     <canvas id="myChart" height="120"></canvas>
 </div>
 
-<!-- JS: Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const allData = {{ all_data | tojson }};
-   
+    const labels = Object.keys(allData).sort();
 
     const categories = {
         "Luyện công": ["bai1", "bai2", "bai3", "bai4", "bai5"],
@@ -149,9 +134,17 @@
                 legend: { position: 'top' },
                 title: {
                     display: true,
-                    text: 'Số nhiệm vụ đã làm theo từng loại'
+                    text: 'Số lượng nhiệm vụ hoàn thành theo từng nhóm'
                 }
             }
+        }
+    });
+
+    // Tự cuộn tới biểu đồ sau khi redirect
+    window.addEventListener('load', () => {
+        if (window.location.href.includes("user=")) {
+            const chartContainer = document.getElementById("myChart");
+            chartContainer.scrollIntoView({ behavior: "smooth" });
         }
     });
 </script>
