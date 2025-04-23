@@ -34,4 +34,6 @@ def index():
     return render_template('index.html', date=selected_date, data=selected_data, all_data=data)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    import os
+app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
+
