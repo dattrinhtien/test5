@@ -28,7 +28,7 @@ def index():
         form_data.pop('date', None)
         data[selected_date] = form_data
         save_data(data)
-        return redirect(f"/?date={selected_date}")
+        return redirect("/")
 
     selected_data = data.get(selected_date, {})
     return render_template('index.html', date=selected_date, data=selected_data, all_data=data)
