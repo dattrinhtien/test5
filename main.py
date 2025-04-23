@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import json
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 DATA_FILE = 'data.json'
@@ -41,7 +42,13 @@ def index():
     selected_data = data.get(user, {}).get(selected_date, {}) if user else {}
     user_data = data.get(user, {}) if user else {}
 
-    return render_template('index.html', user=user, date=selected_date, data=selected_data, all_data=user_data)
+    return render_template(
+        'index.html',
+        user=user,
+        date=selected_date,
+        data=selected_data,
+        all_data=user_data
+    )
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
