@@ -37,9 +37,10 @@ def index():
 
         data[user][selected_date] = form_data
         save_data(data)
-        return redirect(f"/?user={user}")
+        return redirect(f"/?user={user}&reset=1")  # 👈 Redirect sau khi lưu
 
-    selected_data = data.get(user, {}).get(selected_date, {}) if user else {}
+    reset_form = request.args.get('reset') == '1'
+    selected_data = {} if reset_form else data.get(user, {}).get(selected_date, {})
     user_data = data.get(user, {}) if user else {}
 
     return render_template(
@@ -49,6 +50,7 @@ def index():
         data=selected_data,
         all_data=user_data
     )
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 10000)))
