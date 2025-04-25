@@ -92,7 +92,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
     const allData = {{ all_data | tojson }};
-    const labels = Object.keys(allData).sort();
+
+    const labels = Object.keys(allData).sort().slice(-7); // lấy 7 ngày gần nhất
+
 
     const categories = {
         "Luyện công": ["bai1", "bai2", "bai3", "bai4", "bai5"],
